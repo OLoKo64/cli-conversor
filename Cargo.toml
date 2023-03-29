@@ -15,6 +15,6 @@ strip = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4.23"
-clap = { version = "4.1.6", features = ["derive"] }
+chrono = "0.4.24"
+clap = { version = "4.2.0", features = ["derive"] }
 owo-colors = "3.5.0"
