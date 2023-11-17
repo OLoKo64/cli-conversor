@@ -1,108 +1,42 @@
-use owo_colors::OwoColorize;
-
 use crate::{
-    args::{self, Args},
-    conversions,
+    args::{get_args, ConversionOptions},
+    conversions::{
+        print_general_conversion, print_time_conversion, GeneralConversionType, TimeConversionType,
+    },
 };
 
-pub fn output_conversions(args: &Args) {
+pub fn output_conversions() {
+    let args = get_args();
     match &args.conversion_options {
-        args::ConversionOptions::Weight { lbs, pounds } => {
-            if let Some(lbs) = lbs {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} lbs is {:.precision$} kg",
-                    lbs.bright_yellow(),
-                    conversions::lbs_to_kg(*lbs).bright_green(),
-                    precision = precision as usize
-                );
-            } else if let Some(pounds) = pounds {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} pounds is {:.precision$} kg",
-                    pounds.bright_yellow(),
-                    conversions::lbs_to_kg(*pounds).bright_green(),
-                    precision = precision as usize
-                );
+        ConversionOptions::Weight { value } => {
+            if let Some(lbs) = value.lbs {
+                print_general_conversion(&GeneralConversionType::Lbs(lbs));
+            } else if let Some(pounds) = value.pounds {
+                print_general_conversion(&GeneralConversionType::Pounds(pounds));
             } else {
-                println!("Please provide a value to convert");
+                panic!("Please provide a value to convert");
             }
         }
-        args::ConversionOptions::Time { gmt, utc } => {
-            if let Some(gmt) = gmt {
-                println!(
-                    "{} GMT+0 is {} in Sao Paulo time",
-                    gmt.bright_yellow(),
-                    conversions::gmt_to_sao_paulo(gmt)
-                        .unwrap_or_else(|_| {
-                            eprintln!("Could not convert {} to Sao Paulo time", gmt.bright_red());
-                            eprintln!(
-                                "Please provide a valid GMT time {}",
-                                "(HH:MM:SS)".bright_yellow()
-                            );
-                            std::process::exit(1);
-                        })
-                        .bright_green()
-                );
-            } else if let Some(utc) = utc {
-                println!(
-                    "{} UTC+0 is {} in Sao Paulo time",
-                    utc.bright_yellow(),
-                    conversions::gmt_to_sao_paulo(utc)
-                        .unwrap_or_else(|_| {
-                            eprintln!("Could not convert {} to Sao Paulo time", utc.bright_red());
-                            eprintln!(
-                                "Please provide a valid UTC time {}",
-                                "(HH:MM:SS)".bright_yellow()
-                            );
-                            std::process::exit(1);
-                        })
-                        .bright_green()
-                );
+        ConversionOptions::Time { value } => {
+            if let Some(ref gmt) = value.gmt {
+                print_time_conversion(&TimeConversionType::Gmt(gmt));
+            } else if let Some(ref utc) = value.utc {
+                print_time_conversion(&TimeConversionType::Utc(utc));
             } else {
-                println!("Please provide a value to convert");
+                panic!("Please provide a value to convert");
             }
         }
-        args::ConversionOptions::Length {
-            miles,
-            feet,
-            inches,
-            yards,
-        } => {
-            if let Some(miles) = miles {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} miles is {:.precision$} km",
-                    miles.bright_yellow(),
-                    conversions::miles_to_km(*miles).bright_green(),
-                    precision = precision as usize
-                );
-            } else if let Some(feet) = feet {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} feet is {:.precision$} meters",
-                    feet.bright_yellow(),
-                    conversions::feet_to_meters(*feet).bright_green(),
-                    precision = precision as usize
-                );
-            } else if let Some(inches) = inches {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} inches is {:.precision$} centimeters",
-                    inches.bright_yellow(),
-                    conversions::inches_to_centimeters(*inches).bright_green(),
-                    precision = precision as usize
-                );
-            } else if let Some(yards) = yards {
-                let precision = args.precision.unwrap_or_default();
-                println!(
-                    "{} yards is {:.precision$} meters",
-                    yards.bright_yellow(),
-                    conversions::yards_to_meters(*yards).bright_green(),
-                    precision = precision as usize
-                );
+        ConversionOptions::Length { value } => {
+            if let Some(miles) = value.miles {
+                print_general_conversion(&GeneralConversionType::Miles(miles));
+            } else if let Some(feet) = value.feet {
+                print_general_conversion(&GeneralConversionType::Feet(feet));
+            } else if let Some(inches) = value.inches {
+                print_general_conversion(&GeneralConversionType::Inches(inches));
+            } else if let Some(yards) = value.yards {
+                print_general_conversion(&GeneralConversionType::Yards(yards));
             } else {
-                println!("Please provide a value to convert");
+                panic!("Please provide a value to convert");
             }
         }
     }

@@ -21,12 +21,22 @@ pub fn yards_to_meters(yards: f64) -> f64 {
     yards * 0.914_4
 }
 
-pub fn gmt_to_sao_paulo(gmt: &str) -> Result<String, Box<dyn Error>> {
-    let time = chrono::NaiveTime::parse_from_str(gmt, "%H:%M:%S")?;
+pub fn gmt_to_sao_paulo(gmt_time: &str) -> Result<String, Box<dyn Error>> {
+    let time = chrono::NaiveTime::parse_from_str(gmt_time, "%H:%M:%S")?;
     let sao_paulo_time =
         chrono::NaiveTime::from_hms_opt(time.hour() + 3, time.minute(), time.second());
     Ok(sao_paulo_time
         .ok_or("Could not add +3 time to supplied time")?
+        .format("%H:%M:%S")
+        .to_string())
+}
+
+pub fn utc_to_sao_paulo(utc_time: &str) -> Result<String, Box<dyn Error>> {
+    let time = chrono::NaiveTime::parse_from_str(utc_time, "%H:%M:%S")?;
+    let sao_paulo_time =
+        chrono::NaiveTime::from_hms_opt(time.hour() - 3, time.minute(), time.second());
+    Ok(sao_paulo_time
+        .ok_or("Could not subtract -3 time to supplied time")?
         .format("%H:%M:%S")
         .to_string())
 }
