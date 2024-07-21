@@ -1,6 +1,6 @@
 [package]
 name = "cli-converter"
-version = "0.1.110"
+version = "0.1.120"
 edition = "2021"
 
 [[bin]]
@@ -15,6 +15,6 @@ strip = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4.31"
-clap = { version = "4.4.8", features = ["derive"] }
-owo-colors = "3.5.0"
+chrono = "0.4.38"
+clap = { version = "4.5.9", features = ["derive"] }
+owo-colors = "4.0.0"
